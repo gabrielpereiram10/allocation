@@ -1,14 +1,14 @@
 class Discipline:
-    def __init__(self, semester, nome, professor):
+    def __init__(self, semester, name, professor):
         self.semester = semester
-        self.nome = nome
+        self.name = name
         self.professor = professor
 
     def __eq__(self, other: object) -> bool:
-        return isinstance(other, Discipline) and other.nome == self.nome and other.semester == self.semester and other.professor == self.professor
+        return isinstance(other, Discipline) and other.name == self.name and other.semester == self.semester and other.professor == self.professor
 
     def __repr__(self) -> str:
-        return f'{self.nome}'
+        return f'{self.name}'
 
     def __str__(self) -> str:
         return self.__repr__()
