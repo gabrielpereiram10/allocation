@@ -2,14 +2,19 @@ from typing import Union, Set, FrozenSet, Tuple
 
 from allocation.protocols.sat import SAT
 from allocation.protocols.types import ClausesOfIntegers, Interpretation
+from allocation.protocols.interp_converter import InterpConverter
 
 
 class DPLL(SAT):
-    def __init__(self, clauses: ClausesOfIntegers):
+    def __init__(self, clauses: ClausesOfIntegers, converter: InterpConverter = None):
         self._clauses = clauses
+        self._converter = converter
 
     def is_satisfiable(self) -> Union[Interpretation, bool]:
-        ...
+        result = self._sat(self._clauses, set())
+        if result:
+            return self._converter.to_interp(result)
+        return False
 
     def is_satisfiable_test(self) -> Union[Set[int], bool]:
         return self._sat(self._clauses, set())
