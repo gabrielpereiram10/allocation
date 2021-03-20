@@ -1,0 +1,8 @@
+semester,name,professor
+1,Circuitos Digitais,Carlos
+1,Fundamentos de Programação,Daniel
+2,Laboratório de Programação,João
+3,POO,Marcio
+3,Programação Linear,Ana
+4,Lógica para Computação,João
+4,Comunicação de Dados,Marcio
