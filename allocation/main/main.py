@@ -41,10 +41,8 @@ brute_force = BruteForceSAT(model)
 tableau = SemanticTableauSAT({model})
 
 dict_map = atoms_map(len(disciplines), 3)
-cnf_model = ClausalFormConverter.convert(model)
 converter = LiteralConverter(dict_map)
-cnf_model = converter.to_clauses_of_int(cnf_model)
-converter = LiteralConverter(dict_map)
+cnf_model = converter.to_clauses_of_int(ClausalFormConverter.convert(model))
 dpll = DPLL(cnf_model, converter)
 py_sat = PySATAdapter(cnf_model, converter)
 
