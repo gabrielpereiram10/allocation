@@ -3,7 +3,6 @@ from statistics import fmean
 from typing import List
 
 from allocation.protocols.types import Disciplines
-from allocation.main.main import to_model, atoms_map
 from allocation.utils.literal_converter import LiteralConverter
 from allocation.utils.cnf.clausal_form_converter import ClausalFormConverter
 from allocation.main.allocator import Allocator
@@ -13,7 +12,7 @@ from allocation.sats.semantic_tableau import SemanticTableauSAT
 from allocation.sats.dpll import DPLL
 from allocation.sats.pysat_adapter import PySATAdapter
 
-from allocation.main.get_disciplines import get_disciplines
+from allocation.main import get_disciplines, atoms_map, to_model
 
 
 def to_test(disciplines_list: List[Disciplines]):

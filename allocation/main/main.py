@@ -1,7 +1,4 @@
-from allocation.main.get_disciplines import get_disciplines
-from allocation.entities.formula import Atom
-from allocation.constraints import constraints
-from allocation.constraints.composite import ConstraintComposite
+from allocation.main import get_disciplines, atoms_map, to_model
 
 from allocation.sats.brute_force import BruteForceSAT
 from allocation.sats.semantic_tableau import SemanticTableauSAT
@@ -11,22 +8,6 @@ from allocation.sats.pysat_adapter import PySATAdapter
 from allocation.utils.cnf.clausal_form_converter import ClausalFormConverter
 from allocation.utils.literal_converter import LiteralConverter
 from allocation.main.allocator import Allocator
-
-
-def atoms_map(n_disciplines: int, n_schedules: int):
-    dict_map = {}
-    count = 0
-    for i in range(n_disciplines):
-        for j in range(n_schedules):
-            count += 1
-            dict_map[Atom(f'{i + 1}_{j + 1}')] = count
-    return dict_map
-
-
-def to_model(disciplines, n_schedules):
-    composite01 = ConstraintComposite()
-    composite01.add_all([constraint(disciplines, n_schedules) for constraint in constraints])
-    return composite01.apply()
 
 
 disciplines = get_disciplines()[0]
