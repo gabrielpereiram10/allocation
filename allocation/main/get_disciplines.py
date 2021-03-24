@@ -1,12 +1,15 @@
 import csv
 import os
-import pathlib
 
 from allocation.entities.discipline import Discipline
 
 
 def get_disciplines():
-    file = os.path.abspath('../../tests/disciplines01.txt')
-    with open(file, newline='') as csvfile:
-        reader = csv.DictReader(csvfile)
-        return [Discipline(**line) for line in reader]
+    path = os.path.abspath('../../inputs')
+    filenames = sorted(os.listdir(path), key=len)
+    disciplines = []
+    for filename in filenames:
+        with open(f'{path}/{filename}', newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            disciplines.append([Discipline(**line) for line in reader])
+    return disciplines
