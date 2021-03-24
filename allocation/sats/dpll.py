@@ -1,3 +1,4 @@
+from statistics import multimode
 from typing import Union, Set, FrozenSet, Tuple
 
 from allocation.protocols.sat import SAT
@@ -33,13 +34,20 @@ class DPLL(SAT):
         right = {frozenset({literal * -1})}.union(clauses.copy())
         return self._sat(right, interpretation.copy())
 
+    def _get_literal(self, clauses: Set[FrozenSet[int]]) -> int:
+        literals = self.get_multi_mode(clauses)
+        ordered_clauses = sorted(clauses, key=len)
+        for clause in ordered_clauses:
+            intersection_of_literals = set(literals).intersection(clause)
+            if intersection_of_literals:
+                return intersection_of_literals.pop()
+
     @staticmethod
-    def _get_literal(clauses: Set[FrozenSet[int]]) -> int:
-        c = None
-        for clause in clauses.copy():
-            if not c or len(clause) < len(c):
-                c = set(clause)
-        return c.pop()
+    def get_multi_mode(clauses: Set[FrozenSet[int]]):
+        literals = []
+        for clause in clauses:
+            literals.extend(list(clause))
+        return multimode(literals)
 
     def _unit_propagation(self, clauses: Set[FrozenSet[int]], interpretation: Set[int]) -> Tuple[ClausesOfIntegers, Set[int]]:
         unit_clauses_literals = set(map(lambda x: set(x).pop(), filter(self._is_unit_clause, clauses)))
