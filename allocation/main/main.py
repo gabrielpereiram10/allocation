@@ -10,14 +10,7 @@ from allocation.sats.pysat_adapter import PySATAdapter
 
 from allocation.utils.cnf.clausal_form_converter import ClausalFormConverter
 from allocation.utils.literal_converter import LiteralConverter
-from allocation.main.execute import Allocator
-
-
-disciplines = get_disciplines()
-schedules = [
-    [], [], [], [], [],
-    [], [], [], [], []
-]
+from allocation.main.allocator import Allocator
 
 
 def atoms_map(n_disciplines: int, n_schedules: int):
@@ -36,15 +29,17 @@ def to_model(disciplines, n_schedules):
     return composite01.apply()
 
 
-model = to_model(disciplines, 3)
+disciplines = get_disciplines()[0]
+
+model = to_model(disciplines[:7], 3)
+dict_map = atoms_map(len(disciplines), 10)
+converter = LiteralConverter(dict_map)
+cnf_model = converter.to_clauses_of_int(ClausalFormConverter.convert(to_model(disciplines, 10)))
+
 brute_force = BruteForceSAT(model)
 tableau = SemanticTableauSAT({model})
-
-dict_map = atoms_map(len(disciplines), 3)
-converter = LiteralConverter(dict_map)
-cnf_model = converter.to_clauses_of_int(ClausalFormConverter.convert(model))
 dpll = DPLL(cnf_model, converter)
 py_sat = PySATAdapter(cnf_model, converter)
 
-
-Allocator(disciplines, 3).execute([brute_force, tableau, dpll, py_sat])
+Allocator(disciplines[:7], 3).execute([brute_force, tableau])
+Allocator(disciplines, 10).execute([dpll, py_sat])
