@@ -1,7 +1,7 @@
 import time
 from typing import List
 
-from allocation.protocols.types import Disciplines, Schedules
+from allocation.protocols.types import Disciplines
 from allocation.protocols.sat import SAT
 
 
@@ -20,6 +20,14 @@ class Allocator:
                 self.show(self.interpretation_adapt(result))
             else:
                 print(False)
+
+    @classmethod
+    def time_test(cls, sat: SAT):
+        start = time.time()
+        result = sat.is_satisfiable()
+        end = time.time()
+        test_time = end - start
+        return test_time
 
     def interpretation_adapt(self, interp):
         disciplines_copy = self._disciplines.copy()
