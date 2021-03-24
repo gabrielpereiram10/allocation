@@ -8,7 +8,7 @@ from allocation.protocols.interp_converter import InterpConverter
 
 
 class PySATAdapter(SAT):
-    def __init__(self, clauses: ClausesOfIntegers, converter: InterpConverter):
+    def __init__(self, clauses: ClausesOfIntegers, converter: InterpConverter = None):
         self._clauses = clauses
         self._converter = converter
         self._solver = Glucose4()
@@ -17,4 +17,10 @@ class PySATAdapter(SAT):
         [self._solver.add_clause(list(clause)) for clause in self._clauses]
         if self._solver.solve():
             return self._converter.to_interp(set(self._solver.get_model()))
+        return False
+
+    def is_satisfiable_test(self):
+        [self._solver.add_clause(clause) for clause in self._clauses]
+        if self._solver.solve():
+            return self._solver.get_model()
         return False
