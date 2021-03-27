@@ -26,6 +26,9 @@ class DPLL(SAT):
             return interpretation
         if set() in clauses:
             return False
+        clauses, interpretation = self._pure_literals_rule(clauses, interpretation.copy())
+        if not clauses:
+            return interpretation
         literal = self._choose_literal(clauses)
         left = {frozenset({literal})}.union(clauses.copy())
         result = self._sat(left, interpretation.copy())
@@ -33,6 +36,24 @@ class DPLL(SAT):
             return result
         right = {frozenset({literal * -1})}.union(clauses.copy())
         return self._sat(right, interpretation.copy())
+
+    def _pure_literals_rule(self, clauses: Set[FrozenSet[int]], interpretation: Set[int]) -> Tuple[ClausesOfIntegers, Set[int]]:
+        while True:
+            literal = self._pure_literal(clauses)
+            if not literal:
+                break
+            interpretation = interpretation.union({literal})
+            clauses = self._remove_clauses_with_literal(clauses, literal)
+        return clauses, interpretation
+
+    @staticmethod
+    def _pure_literal(clauses: Set[FrozenSet[int]]) -> int:
+        literals = set()
+        for clause in clauses:
+            literals = literals.union(clause)
+        pure_literals = set(filter(lambda x: x * -1 not in literals, literals))
+        if pure_literals:
+            return pure_literals.pop()
 
     def _choose_literal(self, clauses: Set[FrozenSet[int]]) -> int:
         literals = self._get_multi_mode(clauses)
